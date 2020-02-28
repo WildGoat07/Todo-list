@@ -3,9 +3,9 @@ public class DescriptiveTask implements Task {
     protected boolean checked;
     protected String description;
     public DescriptiveTask() {
-        checked = false;
-        title = "";
-        description = "";
+        uncheck();
+        setTitle("");
+        setDescription("");
     }
     public DescriptiveTask(String title, String description)
     {
