@@ -1,60 +1,51 @@
 import java.util.*;
 
-import javafx.collections.*;
-
 public class CheckTask extends DescriptiveTask
 {
-    protected ObservableList<String> checklist;
+    protected List<String> checklist;
     protected List<Boolean> checkStatus;
     public CheckTask() {
         super();
-        init();
-    }
-    private void init()
-    {
-        //on crée un wrapper autour d'une simple ArrayList
-        checklist = FXCollections.observableList(new ArrayList<String>());
-        //on définit le Listener qui sera appelé en cas de changements
-        checklist.addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                while (c.next()) {
-                    //tant qu'on a des changements
-                    if (c.wasAdded()) //si on a ajouté un élément
-                        for (int i = c.getFrom();i<c.getTo();i++)
-                            checkStatus.add(i, false);
-                    if (c.wasRemoved()) //si on a supprimé un élément
-                        for (int i = 0;i<c.getRemovedSize();i++)
-                            //on supprime les n éléments retirés
-                            checkStatus.remove(c.getFrom());
-                    if (c.wasPermutated()) {
-                        //si on a échangé des éléments
-                        Boolean tmp = checkStatus.get(c.getFrom());
-                        checkStatus.set(c.getFrom(), checkStatus.get(c.getTo()));
-                        checkStatus.set(c.getTo(), tmp);
-                    }
-                }
-            }
-        });
     }
     public CheckTask(String title, String description) {
         super(title, description);
-        init();
+        checklist = new ArrayList<String>();
     }
     public CheckTask(boolean checked) {
         super(checked);
-        init();
+        checklist = new ArrayList<String>();
     }
     public CheckTask(String title, String description, boolean checked) {
         super(title, description, checked);
-        init();
+        checklist = new ArrayList<String>();
     }
     /**
-     * Returns the list of the checkable steps
-     * @return checkable steps of the task
+     * Removes a step
+     * @param index index of the step to remove
      */
-    public List<String> getList() {
-        return checklist;
+    public void removeStep(int index)
+    {
+        checkStatus.remove(index);
+        checklist.remove(index);
+    }
+    /**
+     * Adds a new step to the task. The step is by default unfinished
+     * @param description the description of the step
+     */
+    public void addStep(String description)
+    {
+        checkStatus.add(false);
+        checklist.add(description);
+    }
+    /**
+     * Adds a new step to the task
+     * @param description the description of the step
+     * @param checked true if the step is already finished
+     */
+    public void addStep(String description, boolean checked)
+    {
+        checkStatus.add(checked);
+        checklist.add(description);
     }
     /**
      * check a step of the task
@@ -93,6 +84,7 @@ public class CheckTask extends DescriptiveTask
             nextIndentations.run();
             // on affiche la ligne
             if (checkStatus.size() == 0)
+                //si notre liste ne contiens aucune étape
                 System.out.println("  " + line);
             else
                 System.out.println("│ " + line);
@@ -103,21 +95,25 @@ public class CheckTask extends DescriptiveTask
             //pour chaque ligne à cocher
             for (String line : checklist.get(i).split("\n")) {
                 if (first) {
+                    //si on se trouve à la première ligne (avec la case à cocher)
                     nextIndentations.run();
                     if (i != checkStatus.size()-1)
+                        //si on n'est pas la dernière étape
                         System.out.print("├─");
                     else
                         System.out.print("└─");
                         System.out.print(checkStatus.get(i) ? "☑ " : "☐ ");
                 }
                 else {
+                    //si on se trouve sur une éventuelle ligne suivante
                     if (i != checkStatus.size()-1)
-                    System.out.print("│   ");
-                else
-                    System.out.print("    ");
+                        //si on n'est pas la dernière étape
+                        System.out.print("│   ");
+                    else
+                        System.out.print("    ");
                 }
                 // on affiche la ligne
-                System.out.println("  " + line);
+                System.out.println(line);
                 first = false;
             }
         }
