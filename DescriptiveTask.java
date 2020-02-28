@@ -59,11 +59,12 @@ public class DescriptiveTask implements Task {
         System.out.print(isChecked() ? "☑ " : "☐ ");
         System.out.println(title);
         //pour chaque ligne de la description
-        for (String line : description.split("\n")) {
-            //on ajoute l'indentation
-            nextIndentations.run();
-            // on affiche la ligne
-            System.out.println("  " + line);
+        if (description.length() > 0)
+            for (String line : description.split("\n")) {
+                //on ajoute l'indentation
+                nextIndentations.run();
+                // on affiche la ligne
+                System.out.println("  " + line);
         }
     }
     /**

@@ -11,14 +11,6 @@ public class CheckTask extends DescriptiveTask
         super(title, description);
         checklist = new ArrayList<String>();
     }
-    public CheckTask(boolean checked) {
-        super(checked);
-        checklist = new ArrayList<String>();
-    }
-    public CheckTask(String title, String description, boolean checked) {
-        super(title, description, checked);
-        checklist = new ArrayList<String>();
-    }
     /**
      * Removes a step
      * @param index index of the step to remove
@@ -79,15 +71,16 @@ public class CheckTask extends DescriptiveTask
         System.out.print(isChecked() ? "☑ " : "☐ ");
         System.out.println(title);
         //pour chaque ligne de la description
-        for (String line : description.split("\n")) {
-            //on ajoute l'indentation
-            nextIndentations.run();
-            // on affiche la ligne
-            if (checkStatus.size() == 0)
-                //si notre liste ne contiens aucune étape
-                System.out.println("  " + line);
-            else
-                System.out.println("│ " + line);
+        if (description.length() > 0)
+            for (String line : description.split("\n")) {
+                //on ajoute l'indentation
+                nextIndentations.run();
+                // on affiche la ligne
+                if (checkStatus.size() == 0)
+                    //si notre liste ne contient aucune étape
+                    System.out.println("  " + line);
+                else
+                    System.out.println("│ " + line);
         }
         for (int i = 0;i<checkStatus.size();i++)
         {
