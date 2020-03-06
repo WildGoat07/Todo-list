@@ -98,6 +98,7 @@ public class CheckTask extends DescriptiveTask
                         System.out.print(checkStatus.get(i) ? "☑ " : "☐ ");
                 }
                 else {
+                    nextIndentations.run();
                     //si on se trouve sur une éventuelle ligne suivante
                     if (i != checkStatus.size()-1)
                         //si on n'est pas la dernière étape
