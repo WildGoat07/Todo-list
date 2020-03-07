@@ -6,6 +6,7 @@ public class CheckTask extends DescriptiveTask
     protected List<Boolean> checkStatus;
     public CheckTask() {
         super();
+        checklist = new ArrayList<String>();
     }
     public CheckTask(String title, String description) {
         super(title, description);
