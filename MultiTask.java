@@ -102,7 +102,10 @@ public class MultiTask implements Task {
                 );
         }
     }
-
+    /**
+     * Returns the list of sub tasks
+     * @return list of all the sub tasks
+     */
     public List<Task> getTasks() {
         return innerTasks;
     }
