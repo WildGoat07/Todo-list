@@ -88,6 +88,25 @@ public class Main {
                     tasks.get(number - 1).uncheck();
                 }
                 break;
+            case "supprimer" :
+                {
+                    int number;
+                    try {
+                        number = consoleInput.nextInt();
+                    }
+                    catch(Exception e) {
+                        System.out.println("Entrez un nombre");
+                        consoleInput.nextLine();
+                        break;
+                    }
+                    consoleInput.nextLine();
+                    if (number <= 0 || number > tasks.size()) {
+                        System.out.println("Entrez un nombre valide");
+                        break;
+                    }
+                    tasks.remove(number-1);
+                }
+                break;
             default:
                 System.out.println("commande inconnue");
                 break;
