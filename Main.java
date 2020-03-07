@@ -203,4 +203,22 @@ public class Main {
             System.out.print(iterator.next().getTitle() + '/');
         System.out.println();
     }
+    public static void editTask(Task toEdit)
+    {
+        editedTaskPath.push(toEdit);
+        if (toEdit instanceof CheckTask)
+        {
+            CheckTask task = (CheckTask)toEdit;
+        }
+        else if (toEdit instanceof DescriptiveTask)
+        {
+            DescriptiveTask task = (DescriptiveTask)toEdit;
+        }
+        else if (toEdit instanceof MultiTask)
+        {
+            MultiTask task = (MultiTask)toEdit;
+        }
+        //stuff....
+        editedTaskPath.pop();
+    }
 }
