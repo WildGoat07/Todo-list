@@ -113,6 +113,14 @@ public class CheckTask extends DescriptiveTask
             }
         }
     }
+    /**
+     * Returns the list of the steps
+     * @return Array of the steps
+     */
+    public String[] getSteps()
+    {
+        return checklist.toArray(new String[0]);
+    }
     @Override
     public void check() {
         ListIterator<Boolean> it = checkStatus.listIterator();
