@@ -1,4 +1,6 @@
-public interface Task {
+import java.io.Serializable;
+
+public interface Task extends Serializable {
     /**
      * Returns the title of the task
      * @return its title
