@@ -107,6 +107,25 @@ public class Main {
                     tasks.remove(number-1);
                 }
                 break;
+            case "modifier":
+                {
+                    int number;
+                    try {
+                        number = consoleInput.nextInt();
+                    }
+                    catch(Exception e) {
+                        System.out.println("Entrez un nombre");
+                        consoleInput.nextLine();
+                        break;
+                    }
+                    consoleInput.nextLine();
+                    if (number <= 0 || number > tasks.size()) {
+                        System.out.println("Entrez un nombre valide");
+                        break;
+                    }
+                    editTask(tasks.get(number-1));
+                }
+                break;
             default:
                 System.out.println("commande inconnue");
                 break;
@@ -145,7 +164,9 @@ public class Main {
                     String line, desc = "";
                     while ((line = consoleInput.nextLine()).length() > 0)
                         desc += line + '\n';
-                    task.setDescription(desc.substring(0, desc.length()-1));//on mets un substring car on a un retour à la ligne en trop à la fin
+                        if (desc.length() > 0)
+                        desc = desc.substring(0, desc.length()-1);//on mets un substring car on a un retour à la ligne en trop à la fin
+                    task.setDescription(desc);
                     System.out.println("Nouvelle tâche créée avec succès !");
                     return task;
                 }
@@ -158,7 +179,9 @@ public class Main {
                     String line, desc = "";
                     while ((line = consoleInput.nextLine()).length() > 0)
                         desc += line + '\n';
-                    task.setDescription(desc.substring(0, desc.length()-1));//on mets un substring car on a un retour à la ligne en trop à la fin
+                    if (desc.length() > 0)
+                        desc = desc.substring(0, desc.length()-1);//on mets un substring car on a un retour à la ligne en trop à la fin
+                    task.setDescription(desc);
                     System.out.println("Entrez le nom de chaque étapes (ne mettez rien pour terminer)");
                     String step;
                     while ((step = consoleInput.nextLine()).length() > 0)
@@ -171,17 +194,12 @@ public class Main {
                     MultiTask task = new MultiTask();
                     System.out.println("Donner un titre à la nouvelle tâche :");
                     task.setTitle(consoleInput.nextLine());
-                    boolean end = false;
                     editedTaskPath.push(task);
-                    do
-                    {
-                        System.out.println("Vous allez créer une nouvelle sous-tâche, appuyer sur Entrée...");
-                        consoleInput.nextLine();
-                        task.getTasks().add(newTask());
-                        System.out.println("Voulez-vous continuer d'ajouter des sous-tâches ? (\"o\" pour continuer)");
-                        end = (consoleInput.nextLine() != "o");
-                    }
-                    while (!end);
+
+                    System.out.println("Vous allez créer une nouvelle sous-tâche, appuyer sur Entrée...");
+                    consoleInput.nextLine();
+                    task.getTasks().add(newTask());
+
                     editedTaskPath.pop();
                     System.out.println("Nouvelle tâche créée avec succès !");
                     return task;
@@ -209,16 +227,260 @@ public class Main {
         if (toEdit instanceof CheckTask)
         {
             CheckTask task = (CheckTask)toEdit;
+            boolean finish = false;
+            while(!finish)
+            {
+                clearConsole();
+                displayPath();
+                task.display(()->{}, ()->{});
+                System.out.print("\nActions possibles :\ntitre\ndescription\nvalider <num>\nannuler <num>\nsupprimer <num>\nnouvelle\nretour\n>");
+                String choice = consoleInput.next();
+                switch(choice)
+                {
+                case "titre":
+                    {
+                        consoleInput.nextLine();
+                        System.out.println("Donner un titre à la tâche :");
+                        task.setTitle(consoleInput.nextLine());
+                    }
+                    break;
+                case "description":
+                    {
+                        consoleInput.nextLine();
+                        System.out.println("Donner une description à la tâche (Entrer deux fois pour terminer) :");
+                        String line, desc = "";
+                        while ((line = consoleInput.nextLine()).length() > 0)
+                            desc += line + '\n';
+                        if (desc.length() > 0)
+                            desc = desc.substring(0, desc.length()-1);//on mets un substring car on a un retour à la ligne en trop à la fin
+                        task.setDescription(desc);
+                    }
+                    break;
+                case "retour":
+                    consoleInput.nextLine();
+                    finish = true;
+                    break;
+                case "valider":
+                    {
+                        int number;
+                        try {
+                            number = consoleInput.nextInt();
+                        }
+                        catch(Exception e) {
+                            System.out.println("Entrez un nombre");
+                            consoleInput.nextLine();
+                            break;
+                        }
+                        consoleInput.nextLine();
+                        if (number <= 0 || number > task.getSteps().length) {
+                            System.out.println("Entrez un nombre valide");
+                            break;
+                        }
+                        task.checkStep(number-1);
+                    }
+                    break;
+                case "annuler":
+                    {
+                        int number;
+                        try {
+                            number = consoleInput.nextInt();
+                        }
+                        catch(Exception e) {
+                            System.out.println("Entrez un nombre");
+                            consoleInput.nextLine();
+                            break;
+                        }
+                        consoleInput.nextLine();
+                        if (number <= 0 || number > task.getSteps().length) {
+                            System.out.println("Entrez un nombre valide");
+                            break;
+                        }
+                        task.uncheckStep(number-1);
+                    }
+                    break;
+                case "supprimer":
+                    {
+                        int number;
+                        try {
+                            number = consoleInput.nextInt();
+                        }
+                        catch(Exception e) {
+                            System.out.println("Entrez un nombre");
+                            consoleInput.nextLine();
+                            break;
+                        }
+                        consoleInput.nextLine();
+                        if (number <= 0 || number > task.getSteps().length) {
+                            System.out.println("Entrez un nombre valide");
+                            break;
+                        }
+                        task.removeStep(number-1);
+                    }
+                    break;
+                case "nouvelle":
+                    {
+                        consoleInput.nextLine();
+                        System.out.println("Entrez le nom de chaque étapes (ne mettez rien pour terminer)");
+                        String step;
+                        while ((step = consoleInput.nextLine()).length() > 0)
+                            task.addStep(step);
+                    }
+                    break;
+                default:
+                    System.out.println("Commande inconnue");
+                }
+            }
         }
         else if (toEdit instanceof DescriptiveTask)
         {
             DescriptiveTask task = (DescriptiveTask)toEdit;
+            boolean finish = false;
+            while(!finish)
+            {
+                clearConsole();
+                displayPath();
+                task.display(()->{}, ()->{});
+                System.out.print("\nActions possibles :\ntitre\ndescription\nretour\n>");
+                String choice = consoleInput.next();
+                consoleInput.nextLine();
+                switch(choice)
+                {
+                case "titre":
+                    {
+                        System.out.println("Donner un titre à la tâche :");
+                        task.setTitle(consoleInput.nextLine());
+                    }
+                    break;
+                case "description":
+                    {
+                        System.out.println("Donner une description à la tâche (Entrer deux fois pour terminer) :");
+                        String line, desc = "";
+                        while ((line = consoleInput.nextLine()).length() > 0)
+                            desc += line + '\n';
+                        if (desc.length() > 0)
+                            desc = desc.substring(0, desc.length()-1);//on mets un substring car on a un retour à la ligne en trop à la fin
+                        task.setDescription(desc);
+                    }
+                    break;
+                case "retour":
+                    finish = true;
+                    break;
+                default:
+                    System.out.println("Commande inconnue");
+                }
+            }
         }
         else if (toEdit instanceof MultiTask)
         {
             MultiTask task = (MultiTask)toEdit;
+            boolean finish = false;
+            while(!finish)
+            {
+                clearConsole();
+                displayPath();
+                task.display(()->{}, ()->{});
+                System.out.print("\nActions possibles :\ntitre\nvalider <num>\nannuler <num>\nsupprimer <num>\nmodifier <num>\nnouvelle\nretour\n>");
+                String choice = consoleInput.next();
+                switch(choice)
+                {
+                case "titre":
+                    {
+                        consoleInput.nextLine();
+                        System.out.println("Donner un titre à la tâche :");
+                        task.setTitle(consoleInput.nextLine());
+                    }
+                    break;
+                case "retour":
+                    consoleInput.nextLine();
+                    finish = true;
+                    break;
+                case "valider":
+                    {
+                        int number;
+                        try {
+                            number = consoleInput.nextInt();
+                        }
+                        catch(Exception e) {
+                            System.out.println("Entrez un nombre");
+                            consoleInput.nextLine();
+                            break;
+                        }
+                        consoleInput.nextLine();
+                        if (number <= 0 || number > task.getTasks().size()) {
+                            System.out.println("Entrez un nombre valide");
+                            break;
+                        }
+                        task.getTasks().get(number-1).check();
+                    }
+                    break;
+                case "annuler":
+                    {
+                        int number;
+                        try {
+                            number = consoleInput.nextInt();
+                        }
+                        catch(Exception e) {
+                            System.out.println("Entrez un nombre");
+                            consoleInput.nextLine();
+                            break;
+                        }
+                        consoleInput.nextLine();
+                        if (number <= 0 || number > task.getTasks().size()) {
+                            System.out.println("Entrez un nombre valide");
+                            break;
+                        }
+                        task.getTasks().get(number-1).uncheck();
+                    }
+                    break;
+                case "supprimer":
+                    {
+                        int number;
+                        try {
+                            number = consoleInput.nextInt();
+                        }
+                        catch(Exception e) {
+                            System.out.println("Entrez un nombre");
+                            consoleInput.nextLine();
+                            break;
+                        }
+                        consoleInput.nextLine();
+                        if (number <= 0 || number > task.getTasks().size()) {
+                            System.out.println("Entrez un nombre valide");
+                            break;
+                        }
+                        task.getTasks().remove(number-1);
+                    }
+                    break;
+                case "modifier":
+                    {
+                        int number;
+                        try {
+                            number = consoleInput.nextInt();
+                        }
+                        catch(Exception e) {
+                            System.out.println("Entrez un nombre");
+                            consoleInput.nextLine();
+                            break;
+                        }
+                        consoleInput.nextLine();
+                        if (number <= 0 || number > task.getTasks().size()) {
+                            System.out.println("Entrez un nombre valide");
+                            break;
+                        }
+                        editTask(task.getTasks().get(number-1));
+                    }
+                    break;
+                case "nouvelle":
+                    {
+                        consoleInput.nextLine();
+                        task.getTasks().add(newTask());
+                    }
+                    break;
+                default:
+                    System.out.println("Commande inconnue");
+                }
+            }
         }
-        //stuff....
         editedTaskPath.pop();
     }
 }
