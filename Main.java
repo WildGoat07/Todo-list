@@ -1,3 +1,4 @@
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -6,9 +7,11 @@ public class Main {
     public static Scanner consoleInput;
     public static Stack<Task> editedTaskPath;
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws Exception {
         editedTaskPath = new Stack<Task>();
         tasks = new ArrayList<Task>();
+        OpenList();
         consoleInput = new Scanner(System.in);
         while (true) {
             int digits = 1;
@@ -46,6 +49,7 @@ public class Main {
             String choice = consoleInput.next();
             switch(choice) {
             case "quitter" :
+                SaveList();
                 return;
             case "nouvelle" :
                 tasks.add(newTask());
@@ -482,5 +486,24 @@ public class Main {
             }
         }
         editedTaskPath.pop();
+    }
+
+    public static void OpenList() throws Exception {
+        File dataFile = new File("list.ser");
+        if (dataFile.exists()) {
+            ObjectInputStream reader = new ObjectInputStream(new FileInputStream(dataFile));
+            tasks = (List<Task>)reader.readObject();
+            reader.close();
+        }
+        else {
+            tasks = new ArrayList<Task>();
+        }
+    }
+    public static void SaveList() throws Exception {
+        File dataFile = new File("list.ser");
+        dataFile.createNewFile();
+        ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(dataFile));
+        writer.writeObject(tasks);
+        writer.close();
     }
 }
